@@ -1,0 +1,2 @@
+alias ngx='ng new --style=sass --routing=true'
+

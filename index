@@ -1,0 +1,12 @@
+function loadRC {
+	name="${1}"
+
+	source "${HOME}/.rc/${name}"
+}
+
+alias rl='loadRC index'
+
+loadRC ps1
+loadRC nvm
+loadRC git
+loadRC ng
