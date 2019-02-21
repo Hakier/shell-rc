@@ -10,3 +10,4 @@ loadRC ps1
 loadRC nvm
 loadRC git
 loadRC ng
+loadRC npm

@@ -1,2 +1,3 @@
-alias ngx='ng new --style=sass --routing=true'
+alias ngn='ng new --style=sass --routing=true'
+alias ngbp='ng build --project'
 
