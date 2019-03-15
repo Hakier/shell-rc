@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+
+function printLine {
+    node -p '"-".repeat(100)'
+}
+
+function renameWord {
+    rename "s/\w*/${1}/" *
+}
+
+function countLinesFile {
+    wc -l "${1}" | cut -d' ' -f1
+}
+
+alias scx='screen -x'
+
+function mkcd {
+    dir="${1}"
+
+    if [[ ! -e "${dir}" ]]; then
+        mkdir "${dir}"
+    fi
+
+    cd "${dir}"
+}
+
+alias countLines='wc -l | cut -d" " -f1'
+
+alias dc=docker-compose
+alias youtube-mp3='youtube-dl --extract-audio --audio-format mp3'
+alias xc='xclip -selection clipboard'
+alias cl='clear'
+
+alias 7zultra="7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on";

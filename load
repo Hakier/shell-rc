@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+function loadRC {
+    name="${1}"
+
+    source "${HOME}/.rc/${name}"
+}
+
+#alias rl='loadRC index'
+
