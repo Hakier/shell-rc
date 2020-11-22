@@ -1,20 +1,8 @@
 #!/usr/bin/env zsh
 
 loadRC helpers
-
-function repoInfo {
-    repoRemote=`git remote -v | grep push | sed 's/.*\t\(.*\) .*/\1/'`
-    repoHost=`echo ${repoRemote} | cut -d: -f1`
-    repoPath=`echo ${repoRemote} | cut -d: -f2`
-
-    echo -e "Host: ${repoHost}\nPath: ${repoPath}\n$(printLine)"
-}
-
-function remote {
-    repoInfo
-
-    ssh ${repoHost} "cd ${repoPath}; ${@}"
-}
+loadRC git-remote
+loadRC git-merge
 
 alias g=git
 alias cdr='cd `git root`'
@@ -22,3 +10,13 @@ alias pc=proxychains
 alias gp='pc git'
 alias gf='git fetch'
 alias cdr='cd $(git root)'
+alias gco='golem checkout'
+alias gpob='git po `g brn`'
+
+function gitAmendDate {
+    date="${1}"
+    [[ -z "${date}" ]] &&
+        echo "usage: gitAmendDate 'Thu Apr 30 2020 08:13 CEST'" ||
+        GIT_COMMITTER_DATE="${date}" git commit --amend --no-edit --date "${date}"
+}
+

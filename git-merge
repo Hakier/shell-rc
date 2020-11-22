@@ -1,0 +1,53 @@
+#!/usr/bin/env zsh
+
+function mergeTwoRepos {
+    newDirName="${1}"
+    pathToFirstRepo="${2}"
+    pathToSecondRepo="${3}"
+
+    if [ -z "${newDirName}" ]; then
+        echo -n "specify name of new directory: "
+        read newDirName
+    fi
+
+    if [ -e ${newDirName} ]; then
+        echo -e "\nYou must specify non existing directory name"
+        mergeTwoRepos
+        return 0
+    fi
+
+
+    if [ -z "${pathToFirstRepo}" ]; then
+        echo -n "path to first repo: "
+        read pathToFirstRepo
+    fi
+
+    if [ ! -d ${pathToFirstRepo} ]; then
+        echo -e "Repository with given path does not exist!\n"
+        mergeTwoRepos "${newDirName}"
+        return 0
+    fi
+
+
+    if [ -z "${pathToSecondRepo}" ]; then
+        echo -n "path to second repo: "
+        read pathToSecondRepo
+    fi
+
+    if [ ! -d ${pathToSecondRepo} ]; then
+        echo -e "Repository with given path does not exist!\n"
+        mergeTwoRepos "${newDirName}" "${pathToFirstRepo}"
+        return 0
+    fi
+
+    echo -e "\n-----Creating new repo: ${newDirName}"
+    mkdir "${newDirName}" &&
+      cd "${newDirName}" &&
+      echo '.idea' > .gitignore &&
+      git add . &&
+      git commit -m 'init' &&
+      git remote add -f first "${pathToFirstRepo}" &&
+      git merge first/master
+    echo -e "\n-----Merging to it first repo: ${pathToFirstRepo}"
+    echo -e "\n-----Merging to it second repo: ${pathToSecondRepo}"
+}

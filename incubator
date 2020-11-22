@@ -1,0 +1,112 @@
+#!/usr/bin/env zsh
+
+loadRC npm
+loadRC incubator-helpers
+loadRC incubator-build
+loadRC incubator-module
+
+# set projectDir value
+configureProjectVariables backend
+
+alias pys='python -m SimpleHTTPServer 8888'
+
+# Incubator apps
+alias golem="node ${projectDir}/app/console"
+alias project='golem openProject'
+alias p=project
+
+# Incubator apps: Sms Gateway
+alias incubator:sms-gateway="node ${projectDir}/src/smsgateway"
+
+function sms {
+    message="${1}";
+    number="${2}";
+    number="${number:=732009912}";
+
+    curl -X POST \
+        https://sms-hakier.herokuapp.com/send \
+        -H "Content-Type: application/json" \
+        -d '{"phone_number": "'${number}'", "message": "'${message}'"}' | jq
+}
+
+function sendSms {
+    message=${1}
+    number=${2}
+
+    incubator:sms-gateway ${number:=732009912} ${message:=count-down}
+}
+alias incubator:sendSms=sendSms
+
+function sendSmsWithDelay {
+    minutes=${1}
+    message=${2}
+    number=${3}
+
+    sleep $(( $minutes * 60 )) && sendSms ${message} ${number}
+}
+alias incubator:sendSmsWithDelay=sendSmsWithDelay
+
+function paulinka {
+    read message
+    sendSms ${message} 793444086
+}
+
+function hola {
+    read message
+    sendSms ${message} 669455199
+}
+
+# Estimate
+function estimate {
+    echo -e "Optymistic\tNormal\tPesymistic"
+    read o n p
+    echo -e "\nOptymistic: ${o}\nNormal: ${n}\nPesymistic: ${p}"
+    estimated=$(( ($o + 4 * $n + $p) / 6 ))
+    echo "\nEstimate: ${estimated}"
+    echo "Estimate (130%): $(( estimated * 13 / 10 ))"
+}
+alias incubator:estimate=estimate
+
+# jest
+alias jp='jest --watch --coverage false --testPathPattern'
+
+alias sp='node dist/serial-port/cli'
+alias t='node dist/timer/cli'
+alias b='npm run build'
+alias exp='node dist/expander/cli'
+alias t1="sed 's/esp3/esp2/' .env -i; grep esp .env;t"
+alias t2="sed 's/esp2/esp3/' .env -i; grep esp .env;t"
+
+alias it1="sed -e 's/http:\/\/esp3/http:\/\/esp2/' ~/dev/projects/tech/js/incubator/frontend-dist/incubator/*.js -i"
+alias it2="sed -e 's/http:\/\/esp2/http:\/\/esp3/' ~/dev/projects/tech/js/incubator/frontend-dist/incubator/*.js -i"
+
+alias monitor='node dist/serial-port/monitor'
+
+function findIdeTitle {
+  xdotool search --name '(\.js|\.ts)' getwindowname
+}
+
+function findActiveProjectFileName {
+#        xdotool search --name projects getwindowname |
+#          grep projects |
+#          sed 's/.* - .*\/\([^\/]*\).js.*/\1/' | # extract file name
+#          sed 's/\..*//' # remove extensions
+#  sleep 3
+#  xdotool getactivewindow getwindowname |
+  findIdeTitle |
+    sed 's/.* – \(.*\).js.*/\1/' # | # extract file name
+#    sed 's/\..*//' # remove extensions
+}
+
+function jestWatchActiveProjectFile {
+    clear
+    activeProjectFileName=$(findActiveProjectFileName)
+
+    if [ -z ${activeProjectFileName} ]; then
+      echo "Not Found IDE"
+    else
+      echo "Watching: ${activeProjectFileName}"
+      npx jest --watch --verbose -- -p ${activeProjectFileName}
+    fi
+}
+

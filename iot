@@ -1,0 +1,55 @@
+#!/usr/bin/env zsh
+
+function esp {
+    value="${1}"
+    address="${2}"
+
+#    curl "http://192.168.0.29/expander/write?value=${value}&address=${address:=0}"
+    curl "http://esp${1}.hakier.it/${2}"
+}
+
+function espi {
+    value="${2}"
+    address="${1}"
+
+    esp "${value}" "${address:=0}"
+}
+
+function light {
+    esp 4 expander/set/${1}
+}
+#function espc {
+#    esp "${1}" "${3}?channel=${2}"
+#}
+
+alias cdesp='/home/hakier/dev/projects/engineering/sandbox/scripts'
+
+# Timer
+function timer {
+    idx="${2}"
+    postfix="${1}"
+
+    curl "esp${idx:=3}.hakier.it/timer/${postfix}"
+}
+
+function timerCountUp {
+    timer 'count-up' $1
+}
+
+function timerCountDown {
+    minutes="${1}"
+    idx="${2}"
+
+    timer "count-down/${minutes:=25}/0" ${idx:=3}
+}
+
+alias tcu=timerCountUp
+alias tcd=timerCountDown
+
+# NodeMCU
+alias nt='nodemcu-tool'
+alias ntr='nt reset'
+alias ntu='nt upload'
+alias nti='nt init'
+alias nr='sudo nodemcu-tool remove'
+alias nu='sudo nodemcu-tool upload'

@@ -1,0 +1,39 @@
+#!/usr/bin/env zsh
+
+function configureProjectVariables {
+    name=${1}
+    localDev="/home/hakier/dev"
+    incubatorSubPath="projects/tech/js/incubator"
+    incubatorDir="${localDev}/${incubatorSubPath}"
+    projectDir="${incubatorDir}/${name}"
+}
+
+function generateAngularBuildCommand {
+    configureProjectVariables ${1}
+
+    alias incubator:${name}:build-projects="cd ${projectDir} && buildProjectsListedInFile ./sandbox/projects"
+    alias incubator:${name}:build="cd ${projectDir} && ng build --prod --aot"
+    alias incubator:${name}:build-all="incubator:${name}:build-projects && incubator:${name}:build"
+    alias incubator:${name}:sync:local="rsync -av ${projectDir}{/dist,-dist}/ --delete"
+    alias incubator:${name}:sync:remote="rsync -av {${localDev},haq:/home/pi}/${incubatorSubPath}/${name}/ --delete"
+    alias incubator:${name}:release:local="incubator:${name}:build && incubator:${name}:sync:local"
+    alias incubator:${name}:release="incubator:${name}:release:local && incubator:${name}:sync:remote"
+}
+
+function generateBackendBuildCommand {
+    configureProjectVariables ${1}
+
+    alias incubator:${name}:build="cd ${projectDir} && npm run build"
+    alias incubator:${name}:sync:remote="rsync -av {${localDev},haq:/home/pi}/${incubatorSubPath}/${name}/ --delete"
+    alias incubator:${name}:release="incubator:${name}:build && incubator:${name}:sync:remote"
+}
+
+# Incubator Frontend
+generateAngularBuildCommand frontend
+generateBackendBuildCommand backend
+# Incubator New
+generateAngularBuildCommand incubator-frontend
+generateBackendBuildCommand incubator-backend
+# Incubator Wola Ludu
+generateAngularBuildCommand wola-ludu/wola-ludu
+generateBackendBuildCommand wola-ludu/wola-ludu-api

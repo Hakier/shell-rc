@@ -1,0 +1,14 @@
+#!/usr/bin/env zsh
+
+source $HOME/config/bashrc/project
+
+function openRoot {
+    hasRootOpen="`ps aux | grep root | grep screen`"
+
+    if [ "${hasRootOpen}" = "" ]; then
+      yakuake--set-title ar
+       ~/.bin/old/xflux-run
+       ~/.bin/old/trackpoint
+       sudo -s
+    fi
+}

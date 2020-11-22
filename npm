@@ -1,3 +1,33 @@
+#!/usr/bin/env zsh
+
+loadRC npm-config
+loadRC helpers
+
+# Package
+function package {
+    property="${1}"
+    node -p "require('./package.json').${property:=name}"
+}
+
+alias pkg=package
+alias moduleName="pkg name"
+
+function gitTag {
+    version="v`pkg version`"
+
+    if [[ "${1}" == '-f' ]]; then
+        git tag --delete "${version}"
+    fi
+
+    git tag "${version}" &&
+        git po "${version}"
+
+    if [[ "${1}" == '-r' ]]; then
+        remote git po "${version}"
+    fi
+}
+
+# NPM Install
 function npmInstallWithTypes {
 	packageName="${1}"
 	npm install -S "${packageName}" && npm install -D "@types/${packageName}"
@@ -13,3 +43,13 @@ alias nidt=npmInstallDevWithTypes
 alias ni='npm install -S'
 alias nid='npm install -D'
 
+function recreateBarrelFile {
+    barrelFile='index.ts'
+    echo -n '' > ${barrelFile}
+
+    for f in `ls *.ts | egrep -v spec\.ts | egrep -v index\.ts`; do
+        echo "export * from './${f%%.ts}';" >> ${barrelFile}
+    done
+
+    echo '' >> ${barrelFile}
+}

@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+loadRC kde
+
+alias dc=docker-compose
+alias dc:rebuild='dc down; dc build; dc up -d'
+alias dc:restart='dc down; dc up -d'
+alias dt='npm run docker:test; kdmd'
+alias gcp='git checkout HEAD~1'
+
+function dockerTestStop {
+    name="${1}"
+    docker-compose -p "${name}" -f docker-compose.test.yml down
+}
+
+function dockerTestStart {
+    name="${1}"
+    dockerTestStop "${name}" && docker-compose -p "${name}" -f docker-compose.test.yml up --no-color --build tests | tee "/tmp/${name}s.log"
+    kdmd
+}
+
+alias dtst=dockerTestStart
+alias dtsp=dockerTestStop

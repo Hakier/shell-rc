@@ -1,0 +1,53 @@
+#!/usr/bin/env zsh
+
+# public
+#rsync -av ../backend/projects/sms-gateway/ smsgateway.me/ --exclude node_modules --exclude dist; cd smsgateway.me; npm unpublish smsgateway.me --force; npm run release
+
+function removeJs {
+    find projects/*/src -name '*.js' -exec rm {} -v \;
+    find projects/*/src -name '*.js.map' -exec rm {} -v \;
+    find app -name '*.js' -exec rm {} -v \;
+    find app -name '*.js.map' -exec rm {} -v \;
+    find src -name '*.js' -exec rm {} -v \;
+    find src -name '*.js.map' -exec rm {} -v \;
+}
+
+function unPublish {
+    name=$(moduleName)
+
+    if [[ "${name}" == "" ]]; then
+        return 1;
+    fi
+
+    npm unpublish ${name} --force
+}
+alias incubator:unPublish=unPublish
+
+function rePublish {
+    unPublish
+    npm publish
+}
+alias incubator:rePublish=rePublish
+
+function reRelease {
+    unPublish
+    npm run release
+}
+alias incubator:reRelease=reRelease
+
+function makePublic {
+    configureProjectVariables public
+
+    name=$(moduleName)
+    publicPackage="${projectDir}/${name}/"
+
+    if [[ "${name}" == "" ]]; then
+        return 1;
+    fi
+
+    removeJs
+    rsync -av ./ ${publicPackage}/ --exclude node_modules --exclude dist --delete
+    cd ${publicPackage}
+    reRelease
+}
+alias incubator:public=makePublic

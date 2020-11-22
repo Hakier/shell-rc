@@ -1,7 +1,39 @@
 #!/usr/bin/env zsh
 
+function renameAndReplace {
+    lowercaseSource="recipes"
+    uppercaseSource="Recipes"
+    lowercaseTarget="${1}"
+    uppercaseTarget="${2}"
+
+    rename "s/${lowercaseSource}/${lowercaseTarget}/g" *
+    sed -i "s/${lowercaseSource}/${lowercaseTarget}/g" *
+    sed -i "s/${uppercaseSource}/${uppercaseTarget}/g" *
+}
+alias rar=renameAndReplace
+
 function printLine {
     node -p '"-".repeat(100)'
+}
+
+function echoLine {
+    echo -e "${1}\n$(printLine)"
+}
+
+function echoLinePrev {
+    echo -e "$(printLine)\n${1}"
+}
+
+function echoInLines {
+    echo -e "$(printLine)\n$(echoLine ${1})"
+}
+
+function echoEL {
+    echo -e "${1}\n"
+}
+
+function echoLinePrevEL {
+    echo -e "$(echoLinePrev ${1})\n"
 }
 
 function renameWord {
@@ -11,8 +43,6 @@ function renameWord {
 function countLinesFile {
     wc -l "${1}" | cut -d' ' -f1
 }
-
-alias scx='screen -x'
 
 function mkcd {
     dir="${1}"
@@ -26,9 +56,32 @@ function mkcd {
 
 alias countLines='wc -l | cut -d" " -f1'
 
-alias dc=docker-compose
+function update-yt {
+    curl -L https://yt-dl.org/downloads/latest/youtube-dl -o ~/.bin/youtube-dl
+    chmod a+rx ~/.bin/youtube-dl
+    youtube-dl --version
+}
+
+alias youtube-dl='~/.bin/youtube-dl'
 alias youtube-mp3='youtube-dl --extract-audio --audio-format mp3'
 alias xc='xclip -selection clipboard'
 alias cl='clear'
 
 alias 7zultra="7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on";
+
+function setKonsoleName {
+    echo $'\033]30;'"${1}"'\007'
+}
+
+function setKonsoleNameAndOpenScreen {
+    name=${1}
+
+    setKonsoleName ${name}
+    screen -x ${name}
+}
+
+#alias scx='screen -x'
+alias scx=setKonsoleNameAndOpenScreen
+
+alias curlj='curl -H "Content-Type: application/json"'
+alias curljp='curlj -X POST'

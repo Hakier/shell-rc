@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+# History search
+bindkey '\e[A' history-beginning-search-backward
+bindkey '\e[B' history-beginning-search-forward

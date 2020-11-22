@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+
+function removeDist {
+    rm -rf dist -v
+    rm -rf projects/*/dist -v
+}
+
+# Nodemon
+function watchAndMongoFind {
+    nodemon --exec "clear; date +'%H:%M:%S'; mongo-find ${1}"
+}
+
+function watchAndCurlDocument {
+    collectionName="${1}"
+    postfix="${2}"
+
+    nodemon --exec "clear; date +'%H:%M:%S'; sleep 3; curl http://localhost:8008/document/${collectionName:=task}${postfix}"
+}

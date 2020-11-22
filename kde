@@ -1,0 +1,27 @@
+#!/usr/bin/env zsh
+
+function yta {
+    youtube-mp3 "${1}" && amarok "*${1}*"
+}
+
+alias kdm='kdialog --msgbox'
+alias kdp='kdialog --passivepopup'
+alias kdmd='kdm done'
+
+function kdpcd {
+    minutes=${1}
+    seconds=$(( ${minutes} * 60 ))
+    message=${2}
+
+    sleep ${seconds}
+    kdp ${message}
+    kdm ${message}
+}
+
+function ktcd {
+    minutes=${1}
+    message=${2}
+
+    kdpcd ${minutes} ${message:=count-down} &
+    tcd ${minutes}
+}

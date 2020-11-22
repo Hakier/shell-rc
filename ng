@@ -1,3 +1,84 @@
-alias ngn='ng new --style=sass --routing=true'
-alias ngbp='ng build --project'
+#!/usr/bin/env zsh
 
+alias ngl='$(git root)/node_modules/.bin/ng'
+alias ngs='ngl serve --host 0.0.0.0'
+
+alias ng-css-to-less='~/.bin/ng-css-to-less'
+alias ngcl=ng-css-to-less
+
+alias ngbp='ng build --project'
+alias ngn='ng new --style=sass --routing=true'
+
+alias ngt='ng test'
+alias ngtcc='clear; ng test --code-coverage'
+
+function buildProjectsListedInFile {
+    filePath="${1}"
+
+    if [[ "${filePath}" == "" ]]; then
+        echo "please provide path to listed projects"
+        return 1;
+    fi
+
+    logsDir="./logs"
+    failedBuildLog="${logsDir}/failed-build.log"
+    projectsToBuildCount=$(projectsToBuild | countLines)
+
+    function projectsToBuild {
+        egrep -v "#" ${filePath}
+    }
+
+    function countProjectsToBuild {
+        projectsToBuild | countLines
+    }
+
+    function listProjects {
+        echo "${projectsToBuildCount} projects to build:"
+        projectsToBuild | sed -e 's/^/ * /'
+        printLine
+    }
+
+    function initLogs {
+        mkdir ${logsDir} 2>/dev/null
+        echo "Clearing failed build logs"
+        echo -n "" > ${failedBuildLog}
+        printLine
+    }
+
+    function countFailedProjects {
+        echo $(countLinesFile ${failedBuildLog})
+    }
+
+    function readFailedBuildLog {
+        if [[ $(countFailedProjects) -eq 0 ]]; then
+            echo "All projects were build correctly"
+            printLine
+            return 1;
+        fi
+
+        printLine
+        echo "$(countLinesFile ${failedBuildLog}) projects failed to build:"
+        cat ${failedBuildLog}
+        printLine
+
+        return 0
+    }
+
+    function buildProjects {
+        current=1
+
+        for project in $(projectsToBuild); do
+            echo "Building $((current++))/${projectsToBuildCount} Angular Project: ${project}..."
+            ngbp ${project} || echo ${project} >> ${failedBuildLog}
+            printLine
+        done
+    }
+
+    listProjects
+    initLogs
+    buildProjects
+    readFailedBuildLog
+
+    return $(countFailedProjects)
+}
+alias ngbpf=buildProjectsListedInFile

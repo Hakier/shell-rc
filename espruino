@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+function espruinoVersion {
+#    grep 'var version =' index.js | sed "s/.*version = '\(.*\)';.*/\1/"
+    grep '    version:' index.js | sed "s/.*version: '\(.*\)',.*/\1/"
+}
+
+function gitTagEspruino {
+    version=$(espruinoVersion)
+
+    if [[ "${1}" == '-f' ]]; then
+        git tag --delete "${version}"
+    fi
+
+    git tag "${version}" &&
+        git po "${version}"
+}
