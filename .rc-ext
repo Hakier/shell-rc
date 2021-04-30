@@ -1,0 +1,38 @@
+#!/usr/bin/env zsh
+
+alias rl='source ~/.rc-ext'
+
+#source $HOME/config/_config # init config
+
+# Search apps in:
+#PATH="~/.npm-global/bin:$PATH:./run:~/.bin"
+PATH="${PATH}:${HOME}/.bin"
+#PATH="${PATH}:${HOME}/.bin/js"
+#PATH="${PATH}:${HOME}/.bin/fp"
+#PATH="${PATH}:${HOME}/.bin/nodejs"
+
+source $HOME/.rc/load
+
+loadRC helpers
+loadRC root
+ openRoot
+loadRC cd
+loadRC cruise
+loadRC docker
+loadRC git
+loadRC incubator
+loadRC iot
+loadRC kde
+loadRC ng
+loadRC npm
+loadRC zsh
+loadRC tools
+loadRC proxy
+
+#DENO
+export DENO_INSTALL="/home/hakier/.deno"
+export PATH="$PATH:$DENO_INSTALL/bin"
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$HOME/.cargo/bin
+export PATH=$PATH:$HOME/scripts
+
