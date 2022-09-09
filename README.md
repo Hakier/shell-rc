@@ -11,3 +11,10 @@
 ### Helpers
 #### `reloadScripts` (alias `rl`)
 Reload scripts to reflect changes in their code.
+
+#### `editScripts` (alias `es`)
+Edit and reload scripts.
+
+**Usage:**
+
+    editScripts [scriptName]
