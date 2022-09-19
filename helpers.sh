@@ -19,7 +19,3 @@ function editScripts {
 
   reloadScripts
 }
-
-
-alias rl=reloadScripts
-alias es=editScripts
