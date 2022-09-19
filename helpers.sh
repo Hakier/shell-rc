@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-function reloadScripts {
+function h.reloadScripts {
   source ${HOME}/.bashrc
 }
 
-function editScripts {
+function h.editScripts {
   scriptName="${1}"
 
 
@@ -17,5 +17,5 @@ function editScripts {
     ls "${SCRIPTS_DIR}" -1
   fi
 
-  reloadScripts
+  h.reloadScripts
 }

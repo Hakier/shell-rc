@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-alias rl=reloadScripts
-alias es=editScripts
+alias rl=h.reloadScripts
+alias es=h.editScripts

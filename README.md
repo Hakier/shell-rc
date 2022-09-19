@@ -9,12 +9,17 @@
 
 ## Functions
 ### Helpers
-#### `reloadScripts` (alias `rl`)
+#### `h.reloadScripts` (alias `rl`)
 Reload scripts to reflect changes in their code.
 
-#### `editScripts` (alias `es`)
+**Usage:**
+
+    h.reloadScripts
+
+
+#### `h.editScripts` (alias `es`)
 Edit and reload scripts.
 
 **Usage:**
 
-    editScripts [scriptName]
+    h.editScripts [SCRIPT_NAME]
